@@ -9,5 +9,15 @@
  * References:
  *
  */
+#include <iostream>
+ using std::cin; using std::cout;
+ #include <string>
+ using std::string;
 
+ int int main()
+ {
+ 	/* code */
+ 	
+ 	return 0;
+ }
 
