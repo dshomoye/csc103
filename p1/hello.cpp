@@ -14,7 +14,7 @@
  #include <string>
  using std::string;
 
- int int main()
+ int main()
  {
  	string aName, relName;
  	/* code */
