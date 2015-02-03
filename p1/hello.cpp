@@ -19,7 +19,7 @@
  	string aName, relName;
  	/* code */
  	cout << "What is your name?\n";
- 	getLine(cin,aName);
+ 	std::getLine(cin,aName);
 
  	cout << "\nAnd what relative are you avenging?\n";
  	cin >> relName;
