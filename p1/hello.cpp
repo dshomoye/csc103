@@ -19,12 +19,12 @@
  	string aName, relName;
  	/* code */
  	cout << "What is your name?\n";
- 	std::getLine(cin,aName);
+ 	std::getline(cin,aName);
 
  	cout << "\nAnd what relative are you avenging?\n";
  	cin >> relName;
 
- 	cout << endl << " My name is " << aName << ". You killed my " << relName << ". Prepare to die!"
+ 	cout << "\nMy name is " << aName << ". You killed my " << relName << ". Prepare to die! \n";
 
  	return 0;
  }
