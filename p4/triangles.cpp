@@ -32,7 +32,7 @@ unsigned long triangle::area() {
 	// TODO: write this function.
 	// Note: why is it okay to return an integer here?  Recall that
 	// all of our triangles have integer sides, and are right triangles...
-    int area;
+    unsigned long area;
     unsigned long sides[3] = {s1,s2,s3};
     sort(sides, sides+3);
     area = (sides[0]*sides[1])/2;
@@ -49,7 +49,7 @@ bool congruent(triangle t1, triangle t2) {
     sort(t1sides, t1sides+3);
     unsigned long t2sides[3] = {t2.s1,t2.s2,t2.s3};
     sort(t2sides, t2sides+3);
-    if (t1sides == t2sides){
+    if (t1sides[0] == t2sides[0] && t1sides[1] == t2sides[1] && t1sides[2] == t2sides[2] ){
         return true;}
     else{	return false;}
 }
@@ -60,7 +60,7 @@ bool similar(triangle t1, triangle t2) {
     sort(t1sides, t1sides+3);
     unsigned long t2sides[3] = {t2.s1,t2.s2,t2.s3};
     sort(t2sides, t2sides+3);
-    if((t1sides[0]/t2sides[0])==(t1sides[1]/t2sides[1])==(t1sides[2]/t2sides[2])){
+    if((t1sides[0]*t2sides[1])==(t1sides[1]*t2sides[0])&&(t1sides[2]*t2sides[1])==(t1sides[1]*t2sides[2])){
         return true;
     }else{ 
 	return false;}
@@ -69,6 +69,21 @@ bool similar(triangle t1, triangle t2) {
 vector<triangle> findRightTriangles(unsigned long l, unsigned long h) {
 	// TODO: find all the right triangles with integer sides,
 	// subject to the perimeter bigger than l and less than h
+
 	vector<triangle> retval; // storage for return value.
+    for (int hy = 5; hy < h; hy++){
+        for(int opp = 4; opp < hy; opp ++){
+            for(int adj =3; adj < opp; adj ++){
+            if((hy*hy==((opp*opp)+(adj*adj)))){
+                unsigned long peri = hy+opp+adj;
+                if(peri <= h && peri >= l){
+                    triangle tri(adj,opp,hy);
+                    retval.push_back(tri);
+                }            
+            } 
+          }    
+       } 
+    }
+  
 	return retval;
 }
