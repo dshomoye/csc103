@@ -32,7 +32,11 @@ unsigned long triangle::area() {
 	// TODO: write this function.
 	// Note: why is it okay to return an integer here?  Recall that
 	// all of our triangles have integer sides, and are right triangles...
-	return 0;
+    int area;
+    unsigned long sides[3] = {s1,s2,s3};
+    sort(sides, sides+3);
+    area = (sides[0]*sides[1])/2;
+	return area;
 }
 
 void triangle::print() {
@@ -41,12 +45,25 @@ void triangle::print() {
 
 bool congruent(triangle t1, triangle t2) {
 	// TODO: write this function.
-	return false;
+    unsigned long t1sides[3] = {t1.s1,t1.s2,t1.s3};
+    sort(t1sides, t1sides+3);
+    unsigned long t2sides[3] = {t2.s1,t2.s2,t2.s3};
+    sort(t2sides, t2sides+3);
+    if (t1sides == t2sides){
+        return true;}
+    else{	return false;}
 }
 
 bool similar(triangle t1, triangle t2) {
 	// TODO: write this function.
-	return false;
+    unsigned long t1sides[3] = {t1.s1,t1.s2,t1.s3};
+    sort(t1sides, t1sides+3);
+    unsigned long t2sides[3] = {t2.s1,t2.s2,t2.s3};
+    sort(t2sides, t2sides+3);
+    if((t1sides[0]/t2sides[0])==(t1sides[1]/t2sides[1])==(t1sides[2]/t2sides[2])){
+        return true;
+    }else{ 
+	return false;}
 }
 
 vector<triangle> findRightTriangles(unsigned long l, unsigned long h) {
@@ -55,4 +72,3 @@ vector<triangle> findRightTriangles(unsigned long l, unsigned long h) {
 	vector<triangle> retval; // storage for return value.
 	return retval;
 }
-
