@@ -10,7 +10,7 @@
  *
  *
  * Finally, please indicate approximately how many hours you spent on this:
- * #hours: 
+ * #hours: 0.5
  */
 
 #include "fsm.h"
@@ -25,6 +25,7 @@ using std::endl;
 // make sure this function returns the old state.  See the header
 // file for details.
 int cppfsm::updateState(int& state, char c) {
+	using namespace cppfsm;
 	// TODO:  write this function.
 	int oldState= state;
 	switch (state){
@@ -33,7 +34,7 @@ int cppfsm::updateState(int& state, char c) {
 			{
 				return oldState;
 			}
-			else if(c=='"')){
+			else if(c=='"'){
 				state = strlit;
 				return oldState;
 			}
@@ -58,6 +59,11 @@ int cppfsm::updateState(int& state, char c) {
 			if (INSET(c,ident_st))
 			{
 				return state;
+			}
+			else if (INSET(c,iddelim))
+			{
+				state=start;
+				return oldState;
 			}
 			else if (c=='/')
 			{
@@ -129,6 +135,11 @@ int cppfsm::updateState(int& state, char c) {
 			{
 				return state;
 			}
+			else if (INSET(c,iddelim))
+			{
+				state = start;
+				return oldState;
+			}
 			else{
 				state = error;
 				return oldState;
@@ -136,6 +147,9 @@ int cppfsm::updateState(int& state, char c) {
 		
 		case error:
 			return state;
+		default:
+			state = error;
+			return oldState;
 		
 	}
 }
