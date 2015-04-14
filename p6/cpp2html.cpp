@@ -84,10 +84,78 @@ string translateHTMLReserved(char c) {
 	}
 }
 
+
+
+string printLine(string);
+
+string idConvert(string str){
+	map<string, short>::iterator it;  // for searches in our map.
+	it = hlmap.find(str);
+	if (it != hlmap.end()) {
+		return hlspans[hlmap[str]] + str + spanend;
+		}
+	else return str;
+	}	
+
 int main() {
 	// TODO: write the main program.
 	// It may be helpful to break this down and write
 	// a function that processes a single line, which
 	// you repeatedly call from main().
+	string line;
+	while(getline(cin,line)){
+		cout << printLine(line+"\n") << endl;	
+	}
+	
 	return 0;
 }
+
+string printLine(string line){
+	string htmlTrans =""; 
+	int currentState = start; 
+	string strTrans ="";
+	for (unsigned long i = 0; i < line.length(); i++) {
+		 int oldState = updateState(currentState,line[i]);
+		 if(oldState != currentState){
+			 switch (oldState) {
+				case scanid:
+					htmlTrans += idConvert(strTrans);
+					strTrans = "";
+					break;
+				case scannum:
+					htmlTrans+=hlspans[hlnumeric]+strTrans+spanend;
+					strTrans="";
+					break;
+				case comment:
+					htmlTrans+=hlspans[hlcomment]+strTrans+spanend;
+					strTrans="";
+					break;
+				case strlit:
+					htmlTrans+=hlspans[hlstrlit]+strTrans+spanend;
+					strTrans="";
+					break;
+				case readesc:
+					htmlTrans+=hlspans[hlescseq]+strTrans+spanend;
+					strTrans="";
+					break;
+				case readfs:
+					if(currentState!=comment){
+						htmlTrans+=strTrans;
+						strTrans="";
+						}
+					break;
+				case error:
+					htmlTrans+=hlspans[hlerror]+strTrans+spanend;
+					strTrans="";
+					break;
+				case start:
+					htmlTrans+=strTrans;
+					strTrans="";
+					break;				
+				}
+			}
+		strTrans += translateHTMLReserved(line[i]);
+		 }
+	return htmlTrans;
+	}
+
