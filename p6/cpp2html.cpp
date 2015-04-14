@@ -95,7 +95,8 @@ string idConvert(string str){
 		return hlspans[hlmap[str]] + str + spanend;
 		}
 	else return str;
-	}	
+	}
+
 
 int main() {
 	// TODO: write the main program.
@@ -119,42 +120,73 @@ string printLine(string line){
 		 if(oldState != currentState){
 			 switch (oldState) {
 				case scanid:
-					htmlTrans += idConvert(strTrans);
-					strTrans = "";
+					if (currentState==start)
+					{
+						htmlTrans += idConvert(strTrans) + translateHTMLReserved(line[i]);
+						strTrans = "";
+					}
+					else{
+						htmlTrans += idConvert(strTrans);
+						strTrans = translateHTMLReserved(line[i]);
+					}
 					break;
 				case scannum:
 					htmlTrans+=hlspans[hlnumeric]+strTrans+spanend;
-					strTrans="";
+					strTrans = translateHTMLReserved(line[i]);
 					break;
 				case comment:
 					htmlTrans+=hlspans[hlcomment]+strTrans+spanend;
-					strTrans="";
+					strTrans = translateHTMLReserved(line[i]);
 					break;
 				case strlit:
-					htmlTrans+=hlspans[hlstrlit]+strTrans+spanend;
-					strTrans="";
+					if (currentState==start)
+					{
+						htmlTrans+=hlspans[hlstrlit]+strTrans+spanend+ translateHTMLReserved(line[i]);
+						strTrans = "";
+					}
+					else{
+						htmlTrans+=hlspans[hlstrlit]+strTrans+spanend;
+						strTrans = translateHTMLReserved(line[i]);
+					}
 					break;
 				case readesc:
-					htmlTrans+=hlspans[hlescseq]+strTrans+spanend;
-					strTrans="";
+					if (currentState==strlit)
+					{
+						htmlTrans+=hlspans[hlescseq]+strTrans +translateHTMLReserved(line[i])+spanend;
+						strTrans="";
+					}
+					else{
+					htmlTrans+=hlspans[hlerror]+strTrans+spanend;
+					strTrans = translateHTMLReserved(line[i]);
+					}
 					break;
 				case readfs:
 					if(currentState!=comment){
 						htmlTrans+=strTrans;
-						strTrans="";
+						strTrans = translateHTMLReserved(line[i]);
 						}
+						else htmlTrans+=hlspans[hlcomment]+translateHTMLReserved(line[i-1])+spanend;
 					break;
 				case error:
 					htmlTrans+=hlspans[hlerror]+strTrans+spanend;
-					strTrans="";
+					strTrans = translateHTMLReserved(line[i]);
 					break;
 				case start:
 					htmlTrans+=strTrans;
-					strTrans="";
-					break;				
+					strTrans = translateHTMLReserved(line[i]);
+					break;
 				}
 			}
-		strTrans += translateHTMLReserved(line[i]);
+
+		else{
+			if (i==line.length()-1)
+			{
+				htmlTrans+=strTrans;
+				strTrans += translateHTMLReserved(line[i]);
+			}
+			else strTrans += translateHTMLReserved(line[i]);
+		}
+
 		 }
 	return htmlTrans;
 	}
