@@ -1,21 +1,28 @@
 #include "triangles.h"
+#include <iostream>
+#include <vector>
+using std::endl;
+using std::cout;
 
 int main(void) {
 	// TODO: write some code to test out your program.
 	// This won't be graded- it is just for your benefit
 	// and to aid your testing / debugging.
-    int main(){
         
-    Triangle t1 = new Triangle;
-    Triangle t2 = new Triangle;
-    t1.s1=3; t1.s2=4; t1.s3=5;
-    t2.s1=4; t2.s2=5; t2.s3= 3;
+    triangle t1(3,4,5);
+    triangle t2(4,5,3);
     bool cong = congruent(t1,t2);
     bool simi = similar(t1,t2);
+    std::cout << "the area of t is " << t1.area() << "\n";
+    std::cout << "similar is " << simi << "\n congruent is " << cong << endl;    
     
-    
+    std::cout << "test for tri finding "<< endl ;
+    std::vector<triangle> fTri = findRightTriangles(1, 100);
+    cout << "tri made " << endl;
+    for (std::vector<triangle>::iterator it = fTri.begin() ; it != fTri.end(); ++it){
+        triangle nT = *it;
+        std::cout << "[ " << nT.s1 << nT.s2 << nT.s3 << " ]" << endl;
     }
-
     
     
 	return 0;
