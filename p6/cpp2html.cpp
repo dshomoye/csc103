@@ -84,10 +84,110 @@ string translateHTMLReserved(char c) {
 	}
 }
 
+
+
+string printLine(string);
+
+string idConvert(string str){
+	map<string, short>::iterator it;  // for searches in our map.
+	it = hlmap.find(str);
+	if (it != hlmap.end()) {
+		return hlspans[hlmap[str]] + str + spanend;
+		}
+	else return str;
+	}
+
+
 int main() {
 	// TODO: write the main program.
 	// It may be helpful to break this down and write
 	// a function that processes a single line, which
 	// you repeatedly call from main().
+	string line;
+	while(getline(cin,line)){
+		cout << printLine(line+"\n") << endl;	
+	}
+	
 	return 0;
 }
+
+string printLine(string line){
+	string htmlTrans =""; 
+	int currentState = start; 
+	string strTrans ="";
+	for (unsigned long i = 0; i < line.length(); i++) {
+		 int oldState = updateState(currentState,line[i]);
+		 if(oldState != currentState){
+			 switch (oldState) {
+				case scanid:
+					if (currentState==start)
+					{
+						htmlTrans += idConvert(strTrans) + translateHTMLReserved(line[i]);
+						strTrans = "";
+					}
+					else{
+						htmlTrans += idConvert(strTrans);
+						strTrans = translateHTMLReserved(line[i]);
+					}
+					break;
+				case scannum:
+					htmlTrans+=hlspans[hlnumeric]+strTrans+spanend;
+					strTrans = translateHTMLReserved(line[i]);
+					break;
+				case comment:
+					htmlTrans+=hlspans[hlcomment]+strTrans+spanend;
+					strTrans = translateHTMLReserved(line[i]);
+					break;
+				case strlit:
+					if (currentState==start)
+					{
+						htmlTrans+=hlspans[hlstrlit]+strTrans+spanend+ translateHTMLReserved(line[i]);
+						strTrans = "";
+					}
+					else{
+						htmlTrans+=hlspans[hlstrlit]+strTrans+spanend;
+						strTrans = translateHTMLReserved(line[i]);
+					}
+					break;
+				case readesc:
+					if (currentState==strlit)
+					{
+						htmlTrans+=hlspans[hlescseq]+strTrans +translateHTMLReserved(line[i])+spanend;
+						strTrans="";
+					}
+					else{
+					htmlTrans+=hlspans[hlerror]+strTrans+spanend;
+					strTrans = translateHTMLReserved(line[i]);
+					}
+					break;
+				case readfs:
+					if(currentState!=comment){
+						htmlTrans+=strTrans;
+						strTrans = translateHTMLReserved(line[i]);
+						}
+						else htmlTrans+=hlspans[hlcomment]+translateHTMLReserved(line[i-1])+spanend;
+					break;
+				case error:
+					htmlTrans+=hlspans[hlerror]+strTrans+spanend;
+					strTrans = translateHTMLReserved(line[i]);
+					break;
+				case start:
+					htmlTrans+=strTrans;
+					strTrans = translateHTMLReserved(line[i]);
+					break;
+				}
+			}
+
+		else{
+			if (i==line.length()-1)
+			{
+				htmlTrans+=strTrans;
+				strTrans += translateHTMLReserved(line[i]);
+			}
+			else strTrans += translateHTMLReserved(line[i]);
+		}
+
+		 }
+	return htmlTrans;
+	}
+
