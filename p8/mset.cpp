@@ -141,21 +141,27 @@ void mandelbrotArea::render()
 			double y_imag = (-((3/iheight)*j)+1.5);
 			complex::complex *point = new complex::complex(x_real,y_imag);
 			bool inSet = true;
-			for(unsigned n = 0; n<maxIterations; n++){
-				if (*point.norm()>2) {inSet = false;  break ; }
+			for(unsigned n = 0; n<30; n++){
+				if (*point.norm()>2) {inSet = false;  
+					qc.setRgbF(n*unit,sqrt(n*unit),n*unit);
+					break ; }
 				*point = (*point)*(*point)+(*point+*point);
-				
-
 			}
+			if(inSet){
+				qc.setRgbF(0,0,0);
+			}
+			qp.setColor(qc);
+			qp.setPen(qpen);
+			qp.drawPoint(i,j);
 		}
 	}
 
-	for (unsigned long i = 0; i < iwidth; i++) {
-		qc.setRgbF(i*unit,sqrt(i*unit),i*unit); // set the color we want to draw.
-		qpen.setColor(qc); // apply the color to the pen
-		qp.setPen(qpen);   // set the painter to use that pen
-		qp.drawLine(i,0,i,iheight); // draw a line of the specified color.
-	}
+	//for (unsigned long i = 0; i < iwidth; i++) {
+	//	qc.setRgbF(i*unit,sqrt(i*unit),i*unit); // set the color we want to draw.
+	//	qpen.setColor(qc); // apply the color to the pen
+	//	qp.setPen(qpen);   // set the painter to use that pen
+	//	qp.drawLine(i,0,i,iheight); // draw a line of the specified color.
+	//}
 	update(); // repaint screen contents
 	return;
 }
