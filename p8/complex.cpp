@@ -81,13 +81,20 @@ complex operator-(const complex& w, const complex& z)
 complex operator*(const complex& w, const complex& z)
 {
 	// TODO: write this function.
-	return complex();
+	complex ret_val;
+	ret_val.real = (w.real*w.real)-(z.real*z.real);
+	ret_val.imag = 2*w.imag*z.imag;
+	return ret_val;
 }
 
 complex operator/(complex& w, complex& z)
 {
 	// TODO: write this function.
-	return complex();
+	int a = w.real; int b = w.imag; int c = z.real; int d = z.imag;
+	complex ret_val;
+	ret_val.real = ((a*c)+(b*d))/((c*c)+(d*d));
+	ret_val.imag = (b-d)/((c*c)+(d*d));
+	return ret_val;
 }
 
 complex operator^(const complex& w, int a)
