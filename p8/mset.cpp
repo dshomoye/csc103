@@ -30,7 +30,7 @@ mandelbrotArea::mandelbrotArea(QWidget *parent) : QWidget(parent)
 	// set our inital view to hold the entire mandelbrot set.
 	// a 3x3 square with -2,-1.5 as the lower left should work.
 	llCoord.real = -2;
-	llCoord.imag = -1.5;
+	llCoord.imag = 1.5;
 	windowWidth = 3;
 	this->maxIterations = 200; // a decent default
 	setAttribute(Qt::WA_StaticContents);
@@ -120,11 +120,12 @@ void mandelbrotArea::render()
 	// TODO: write this function.
 	// draw the portion of the mandelbrot set that lies in our window.
 	// idea: loop through all the pixels, iterate the function figure out how
-	// quickly the point is diverging, and color it based on the result
+	// quickly the  is diverging, and color it based on the result
 
 	// to give you some idea of what you need to do, I've drawn a nice green
 	// gradient on the screen.  You will want to set the individual pixels
 	// using the qp.drawPoint(x,y) function, instead of drawing a line.
+
 	QPainter qp(&image);
 	QColor qc;
 	QPen qpen;
@@ -132,6 +133,23 @@ void mandelbrotArea::render()
 	unsigned long iwidth = image.width();
 	unsigned long iheight = image.height();
 	double unit = 1.0 / iwidth; // on a scale of 0-1, how wide is a pixel?
+
+	for (unsigned long i = 0; i < iwidth i++)
+	{
+		double x_real = ((3/iwidth)*i)-2;
+		for (unsigned long j = 0; j < iheight j++){
+			double y_imag = (-((3/iheight)*j)+1.5);
+			complex::complex *point = new complex::complex(x_real,y_imag);
+			bool inSet = true;
+			for(unsigned n = 0; n<maxIterations; n++){
+				if (*point.norm()>2) {inSet = false;  break ; }
+				*point = (*point)*(*point)+(*point+*point);
+				
+
+			}
+		}
+	}
+
 	for (unsigned long i = 0; i < iwidth; i++) {
 		qc.setRgbF(i*unit,sqrt(i*unit),i*unit); // set the color we want to draw.
 		qpen.setColor(qc); // apply the color to the pen
