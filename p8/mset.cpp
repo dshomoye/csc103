@@ -46,22 +46,8 @@ bool mandelbrotArea::saveImage(const QString &fileName, const char *fileFormat)
 
 void mandelbrotArea::refreshImage()
 {
-	// this is just an example.  by making this function a "slot" (see the
-	// header file) we can easily connect it to events from other objects
-	// just as an illustration, we'll draw the gradient the other way.
-	QPainter qp(&image);
-	QColor qc;
-	QPen qpen;
-	// get the dimensions of our image in terms of pixels:
-	unsigned long iwidth = image.width();
-	unsigned long iheight = image.height();
-	double unit = 1.0 / iwidth; // on a scale of 0-1, how wide is a pixel?
-	for (unsigned long i = 0; i < iwidth; i++) {
-		qc.setRgbF(i*unit,sqrt(i*unit),i*unit); // set the color we want to draw.
-		qpen.setColor(qc); // apply the color to the pen
-		qp.setPen(qpen);   // set the painter to use that pen
-		qp.drawLine(iwidth-i-1,0,iwidth-i-1,iheight); // draw a line of the specified color.
-	}
+	if(!drawnYet){ this-> render();} 
+	
 	update(); // repaint screen contents
 	return;
 }
@@ -132,26 +118,32 @@ void mandelbrotArea::render()
 	// get the dimensions of our image in terms of pixels:
 	unsigned long iwidth = image.width();
 	unsigned long iheight = image.height();
-	double unit = 1.0 / iwidth; // on a scale of 0-1, how wide is a pixel?
+	double unit = 3.0 / iwidth; // on a scale of 0-1, how wide is a pixel?
+	double unitY = 3.0 / iheight;
+	std::cout << "this is the translation and conversion  for 0 " << ((-(unit*0))+1.5);
 
-	for (unsigned long i = 0; i < iwidth i++)
+	for (unsigned long i = 0; i < iwidth; i++)
 	{
 		double x_real = ((3/iwidth)*i)-2;
-		for (unsigned long j = 0; j < iheight j++){
-			double y_imag = (-((3/iheight)*j)+1.5);
-			complex::complex *point = new complex::complex(x_real,y_imag);
+		for (unsigned long j = 0; j < iheight; j++){
+			double y_imag = (-(unitY*j)+1.5);
+			complex* point = new complex(x_real,y_imag);
 			bool inSet = true;
 			for(unsigned n = 0; n<30; n++){
-				if (*point.norm()>2) {inSet = false;  
-					qc.setRgbF(n*unit,sqrt(n*unit),n*unit);
+				if (point->norm()>2) {inSet = false; 
+					unsigned nc = 30-n ;
+					qc.setRgbF(nc*unit,sqrt(nc*unit),nc*unit);
 					break ; }
 				*point = (*point)*(*point)+(*point+*point);
+				cout << "this is real " << x_real << " and imag " << y_imag << endl;
+				cout << "new point real " << point->real << " imag " << point->imag <<  endl;
 			}
 			if(inSet){
 				qc.setRgbF(0,0,0);
 			}
-			qp.setColor(qc);
+			qpen.setColor(qc);
 			qp.setPen(qpen);
+			cout << "this is i " << i << " and j " << j << endl;
 			qp.drawPoint(i,j);
 		}
 	}
