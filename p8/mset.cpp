@@ -54,6 +54,17 @@ void mandelbrotArea::refreshImage()
 
 void mandelbrotArea::mouseDoubleClickEvent(QMouseEvent *event)
 {
+	QImage visibleImage = image;
+	if(event->button() == Qt::LeftButton){
+	cout << "left double click" << endl;
+	resizeImage(&visibleImage, (size()/2));
+	}
+	else if(event->button() == Qt::RightButton){
+	cout << "right double click"<<endl;
+	resizeImage(&visibleImage, (size()/2));
+	}
+	update();
+	return;
 	// TODO: write the code for the zoom operation.  You can get
 	// the mouse button from event->button() and check for 
 	// event->button() == Qt::LeftButton, etc. to figure out what
@@ -161,6 +172,8 @@ void mandelbrotArea::render()
 void mandelbrotArea::resizeImage(QImage *image, const QSize &newSize)
 {
 	// your custom resize code would go here...
+	image->size() = newSize;
+		
 	if (image->size() == newSize)
 		return;
 
