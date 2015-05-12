@@ -46,7 +46,7 @@ bool mandelbrotArea::saveImage(const QString &fileName, const char *fileFormat)
 
 void mandelbrotArea::refreshImage()
 {
-	if(!drawnYet){ this-> render();} 
+	//if(!drawnYet){ this-> render();} 
 	
 	update(); // repaint screen contents
 	return;
@@ -120,30 +120,30 @@ void mandelbrotArea::render()
 	unsigned long iheight = image.height();
 	double unit = 3.0 / iwidth; // on a scale of 0-1, how wide is a pixel?
 	double unitY = 3.0 / iheight;
-	std::cout << "this is the translation and conversion  for 0 " << ((-(unit*0))+1.5);
 
 	for (unsigned long i = 0; i < iwidth; i++)
 	{
-		double x_real = ((3/iwidth)*i)-2;
+		double x_real = ((unit*i)-2);
 		for (unsigned long j = 0; j < iheight; j++){
 			double y_imag = (-(unitY*j)+1.5);
 			complex* point = new complex(x_real,y_imag);
+			complex* cons = new complex(x_real,y_imag);		
 			bool inSet = true;
 			for(unsigned n = 0; n<30; n++){
-				if (point->norm()>2) {inSet = false; 
-					unsigned nc = 30-n ;
-					qc.setRgbF(nc*unit,sqrt(nc*unit),nc*unit);
+				if (point->norm()>2) {
+					inSet = false; 
+					qc.setRgbF(n*unit,sqrt(n*unit),n*unit);
 					break ; }
-				*point = (*point)*(*point)+(*point+*point);
-				cout << "this is real " << x_real << " and imag " << y_imag << endl;
-				cout << "new point real " << point->real << " imag " << point->imag <<  endl;
+				//*point = ((*point)*(*point))+(*cons);	
+				double oldReal = point->real; double oldImag = point->imag ;
+				point->real = ((oldReal*oldReal))-(oldImag*oldImag)+(cons->real);
+				point->imag = (2.0*(oldImag*oldReal)+(cons->imag));			
 			}
 			if(inSet){
 				qc.setRgbF(0,0,0);
 			}
 			qpen.setColor(qc);
 			qp.setPen(qpen);
-			cout << "this is i " << i << " and j " << j << endl;
 			qp.drawPoint(i,j);
 		}
 	}
